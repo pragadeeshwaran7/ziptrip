@@ -17,6 +17,7 @@ This repository contains the completed code and documentation for Challenge 1 an
 │   ├── q5_three_boxes.html       # Question 5: HTML layout wrapper
 │   └── q5_three_boxes.css        # Question 5: CSS layouts stylesheet
 └── challenge2/                   # Challenge 2: Multi-Page Todo App
+    ├── vercel.json               # Vercel deployment and routing rules
     ├── backend/                  # Express.js server
     │   ├── data/
     │   │   └── todos.json        # Database persistence file
@@ -35,6 +36,18 @@ This repository contains the completed code and documentation for Challenge 1 an
             └── css/
                 └── styles.css    # Premium glassmorphic styling
 ```
+
+---
+
+## Live Vercel Deployment
+
+Challenge 2 has been successfully published to Vercel and is fully operational online:
+👉 **[Infinity Todo on Vercel](https://challenge2-woad.vercel.app/)**
+
+### Serverless Architecture Highlights:
+*   **Vite React Frontend**: Statically built and served via Vercel's Edge Network for high performance.
+*   **Express API Function**: Hosted as an auto-scaling Node.js Serverless Function mapping `/api/*` requests to the Express server.
+*   *Note on Serverless Storage*: Because serverless containers are ephemeral (stateless), any changes written to the local file database `todos.json` are temporary and will reset during scale-up/scale-down cycles or container cold starts. In a production system, this backend is designed to be easily swapped with a persistent database service like MongoDB or PostgreSQL.
 
 ---
 
