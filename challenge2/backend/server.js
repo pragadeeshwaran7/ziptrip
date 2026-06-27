@@ -40,6 +40,20 @@ async function writeTodos(todos) {
     }
 }
 
+let todosCache = null;
+
+async function getTodos() {
+    if (todosCache === null) {
+        todosCache = await readTodos();
+    }
+    return todosCache;
+}
+
+async function saveTodos(todos) {
+    todosCache = todos;
+    await writeTodos(todos);
+}
+
 // Priority weight helper for sorting
 const PRIORITY_WEIGHTS = {
     high: 3,
@@ -54,7 +68,7 @@ const PRIORITY_WEIGHTS = {
 // 1. GET /api/todos - Get all todos (with filtering, searching, and sorting)
 app.get('/api/todos', async (req, res) => {
     try {
-        let todos = await readTodos();
+        let todos = await getTodos();
         const { q, status, priority, category, sortBy, sortOrder = 'asc' } = req.query;
 
         // A. Search by text (title or description)
@@ -84,11 +98,14 @@ app.get('/api/todos', async (req, res) => {
 
         // E. Sort results
         if (sortBy) {
+            // Create a copy to sort to avoid mutating the cached array directly
+            todos = [...todos];
             todos.sort((a, b) => {
                 let comparison = 0;
 
                 if (sortBy === 'dueDate') {
                     // Handle case where one or both have no due date
+                    if (!a.dueDate && !b.dueDate) return 0;
                     if (!a.dueDate) return 1;
                     if (!b.dueDate) return -1;
                     comparison = new Date(a.dueDate) - new Date(b.dueDate);
@@ -115,7 +132,7 @@ app.get('/api/todos', async (req, res) => {
 // 2. GET /api/todos/:id - Get a single todo by ID
 app.get('/api/todos/:id', async (req, res) => {
     try {
-        const todos = await readTodos();
+        const todos = await getTodos();
         const todo = todos.find(t => t.id === req.params.id);
         if (!todo) {
             return res.status(404).json({ error: 'Todo not found' });
@@ -135,7 +152,7 @@ app.post('/api/todos', async (req, res) => {
             return res.status(400).json({ error: 'Title is required' });
         }
 
-        const todos = await readTodos();
+        const todos = await getTodos();
         const now = new Date().toISOString();
 
         const newTodo = {
@@ -153,7 +170,7 @@ app.post('/api/todos', async (req, res) => {
         };
 
         todos.push(newTodo);
-        await writeTodos(todos);
+        await saveTodos(todos);
 
         res.status(201).json(newTodo);
     } catch (error) {
@@ -164,7 +181,7 @@ app.post('/api/todos', async (req, res) => {
 // 4. PUT /api/todos/:id - Update an existing todo
 app.put('/api/todos/:id', async (req, res) => {
     try {
-        const todos = await readTodos();
+        const todos = await getTodos();
         const todoIndex = todos.findIndex(t => t.id === req.params.id);
 
         if (todoIndex === -1) {
@@ -194,7 +211,7 @@ app.put('/api/todos/:id', async (req, res) => {
         }
 
         todos[todoIndex] = updatedTodo;
-        await writeTodos(todos);
+        await saveTodos(todos);
 
         res.json(updatedTodo);
     } catch (error) {
@@ -205,7 +222,7 @@ app.put('/api/todos/:id', async (req, res) => {
 // 5. DELETE /api/todos/:id - Delete a todo
 app.delete('/api/todos/:id', async (req, res) => {
     try {
-        const todos = await readTodos();
+        const todos = await getTodos();
         const todoIndex = todos.findIndex(t => t.id === req.params.id);
 
         if (todoIndex === -1) {
@@ -213,7 +230,7 @@ app.delete('/api/todos/:id', async (req, res) => {
         }
 
         todos.splice(todoIndex, 1);
-        await writeTodos(todos);
+        await saveTodos(todos);
 
         res.json({ message: 'Todo deleted successfully' });
     } catch (error) {
