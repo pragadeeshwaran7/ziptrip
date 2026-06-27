@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question 5 - Three Column Layout Solutions</title>
+    <link rel="stylesheet" href="q5_three_boxes.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="page-container">
+        <header>
+            <h1>Challenge 1 - Question 5: Three-Column Layouts</h1>
+            <p class="subtitle">Demonstrating 4 different ways in CSS to place three boxes horizontally where the left/right boxes are fixed at 100px and the middle box fills the remaining space dynamically without overlap.</p>
+        </header>
+
+        <main>
+            <!-- METHOD 1: FLEXBOX -->
+            <section class="demo-section">
+                <h2>Method 1: CSS Flexbox (Modern Standard)</h2>
+                <p class="method-desc">Utilizes <code>display: flex</code> on the container. The left and right boxes are given a fixed width and prevented from shrinking (<code>flex-shrink: 0</code>), while the middle box is given <code>flex-grow: 1</code> (or <code>flex: 1</code>) to absorb all remaining space.</p>
+                <div class="container flex-layout">
+                    <div class="left fixed box">Left (100px)</div>
+                    <div class="middle box">Middle (Flex Fill)</div>
+                    <div class="right fixed box">Right (100px)</div>
+                </div>
+            </section>
+
+            <!-- METHOD 2: CSS GRID -->
+            <section class="demo-section">
+                <h2>Method 2: CSS Grid (Modern Layout Engine)</h2>
+                <p class="method-desc">Utilizes <code>display: grid</code> on the container. We define three columns: <code>grid-template-columns: 100px 1fr 100px;</code>. This explicitly sets the outer columns to 100px and the center column to take 1 fractional unit of the remaining space.</p>
+                <div class="container grid-layout">
+                    <div class="left fixed box">Left (100px)</div>
+                    <div class="middle box">Middle (Grid 1fr)</div>
+                    <div class="right fixed box">Right (100px)</div>
+                </div>
+            </section>
+
+            <!-- METHOD 3: ABSOLUTE POSITIONING -->
+            <section class="demo-section">
+                <h2>Method 3: Absolute Positioning & Margins (Classic Responsive)</h2>
+                <p class="method-desc">The container is relative-positioned. The left and right boxes are absolutely positioned (<code>left: 0</code> and <code>right: 0</code> respectively) with <code>width: 100px</code>. The middle box is static but given <code>margin-left: 100px</code> and <code>margin-right: 100px</code> so it naturally fills the center space without overlapping the positioned elements.</p>
+                <div class="container absolute-layout">
+                    <div class="left fixed box">Left (100px)</div>
+                    <div class="middle box">Middle (Positioned Margin)</div>
+                    <div class="right fixed box">Right (100px)</div>
+                </div>
+            </section>
+
+            <!-- METHOD 4: FLOATS WITH CALC -->
+            <section class="demo-section">
+                <h2>Method 4: Floats & Width Calc (Legacy Compatibility)</h2>
+                <p class="method-desc">Floats the left box to the left, the right box to the right. The middle box is floated left and its width is dynamically calculated using <code>width: calc(100% - 200px);</code>. A clearfix is applied to the container so that it doesn't collapse.</p>
+                <div class="container float-layout clearfix">
+                    <div class="left fixed box">Left (100px)</div>
+                    <div class="middle box">Middle (Float + Calc)</div>
+                    <div class="right fixed box">Right (100px)</div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
