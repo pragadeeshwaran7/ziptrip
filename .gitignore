@@ -26,3 +26,6 @@ yarn-debug.log*
 yarn-error.log*
 logs/
 *.log
+
+# Temporary extracted docx text
+extracted_docx_content.txt
